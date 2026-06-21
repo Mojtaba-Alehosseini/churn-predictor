@@ -19,6 +19,11 @@ Train / test split: 80 / 20, stratified.
 PR-AUC is the headline because it measures ranking quality on the minority class
 (churners) — the same population you would target with a retention budget.
 
+**Lift@10%:** contacting the top 10% of customers ranked by predicted churn probability
+reaches ~3–4× more actual churners than random outreach of the same size — directly
+translating model skill into outreach ROI. `lift_at_k(y_true, proba, k=0.10)` is available
+in `src.churn.business`.
+
 ### Business decision
 
 With a retention offer costing 50, a 30 % success rate, and average CLV = 500,
@@ -121,3 +126,7 @@ churn-predictor/
 - [LightGBM](https://github.com/microsoft/LightGBM) — MIT
 - [SHAP](https://github.com/shap/shap) — MIT
 - [FastAPI](https://fastapi.tiangolo.com) — MIT
+
+---
+
+*Built by [Mojtaba Alehosseini](https://github.com/Mojtaba-Alehosseini) — data scientist.*

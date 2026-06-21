@@ -55,3 +55,30 @@ def top_at_risk(
     df["churn_prob"] = proba.values
     df = df[df["churn_prob"] >= threshold]
     return df.nlargest(n, "churn_prob").reset_index(drop=True)
+
+
+def lift_at_k(
+    y_true: pd.Series,
+    proba: pd.Series,
+    k: float = 0.10,
+) -> float:
+    """
+    Lift at top-k%: how much better than random is the model when contacting
+    the top k fraction of customers sorted by predicted churn probability.
+
+    lift@k = (precision in top-k) / (base rate)
+
+    A lift of 3.0 means the top-10% list contains 3× more churners than a
+    random list of the same size — directly translates to outreach ROI.
+    """
+    import numpy as np
+
+    y = pd.Series(y_true).reset_index(drop=True)
+    p = pd.Series(proba).reset_index(drop=True)
+    n = max(1, int(np.ceil(len(y) * k)))
+    top_idx = p.nlargest(n).index
+    precision_at_k = y.iloc[top_idx].mean()
+    base_rate = y.mean()
+    if base_rate <= 0:
+        return float("nan")
+    return float(precision_at_k / base_rate)
